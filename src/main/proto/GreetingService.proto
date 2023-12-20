@@ -1,0 +1,18 @@
+syntax = "proto3";
+package com.generated.grpc;
+
+//описание запроса от клиента
+//теги (1 и 2) являются легковесными алиасами для ключей name, values ...
+message HelloRequest {
+  string name = 1;
+  repeated string bons = 2;
+}
+
+message HelloResponse {
+  string greeting = 1;
+}
+
+//логическое объединение вызываемых процедур - это сервис
+service GreetingService {
+  rpc greeting(HelloRequest) returns (HelloResponse);
+}
