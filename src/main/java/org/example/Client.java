@@ -7,6 +7,8 @@ import io.grpc.ManagedChannelBuilder;
 
 import static com.generated.grpc.GreetingServiceOuterClass.HelloRequest.newBuilder;
 
+import java.util.Iterator;
+
 public class Client {
     public static void main(String[] args) {
         ManagedChannel channel = ManagedChannelBuilder.forTarget("localhost:8080")
@@ -20,9 +22,12 @@ public class Client {
         GreetingServiceOuterClass.HelloRequest request  = GreetingServiceOuterClass.HelloRequest
                 .newBuilder().setName("Ithe4th").build();
 
-        //получим ответ сервера, распечатаем в консоль
-        GreetingServiceOuterClass.HelloResponse response = stub.greeting(request);
-        System.out.println(response);
+        //после вызова этого метода с сервера принимается поток, не одно событие
+        //пока сервер отправляет данные, будем идти по этому итератору
+        Iterator<GreetingServiceOuterClass.HelloResponse> response = stub.greeting(request);
+        while(response.hasNext())
+                System.out.println(response.next());
+
         channel.shutdown();
     }
 }
